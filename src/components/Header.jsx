@@ -1,8 +1,14 @@
 import logoImg from '../assets/logo.jpg';
 import Button from './UI/Button';
 
+import { useContext } from 'react';
+import CartContext from '../store/CartContext';
+
 // TODO: in React if you just pass textOnly, it will automatically be setted as true
 function Header() {
+  const { items } = useContext(CartContext);
+
+  const numberOfCartItems = items.reduce((acc, curr) => acc + curr.quantity, 0);
   return (
     <header id="main-header">
       <div id="title">
@@ -11,7 +17,7 @@ function Header() {
       </div>
       <nav>
         <Button textOnly={true} className="">
-          Cart (3)
+          Cart ({numberOfCartItems})
         </Button>
       </nav>
     </header>
