@@ -1,5 +1,7 @@
 import logoImg from '../assets/logo.jpg';
+import Button from './UI/Button';
 
+// TODO: in React if you just pass textOnly, it will automatically be setted as true
 function Header() {
   return (
     <header id="main-header">
@@ -8,7 +10,9 @@ function Header() {
         <h1>ReactFood</h1>
       </div>
       <nav>
-        <button>Cart {`(3)`}</button>
+        <Button textOnly={true} className="">
+          Cart (3)
+        </Button>
       </nav>
     </header>
   );
