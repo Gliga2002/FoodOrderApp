@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { fetchMeals } from '../http';
+import { fetchMeals } from '../util/http';
+import MealItem from './MealItem';
 
 function Meals() {
   const [isLoading, setIsLoading] = useState(false);
@@ -34,24 +35,9 @@ function Meals() {
   if (!isLoading && !error) {
     content = (
       <ul id="meals">
-        {loadedMeals.map((meal) => {
-          return (
-            <li key={meal.id} className="meal-item">
-              <article>
-                <img src={`http://localhost:3000/${meal.image}`} alt="img" />
-                <div>
-                  <h3>{meal.name}</h3>
-                  <p className="meal-item-price">{meal.price}</p>
-                  <p className="meal-item-description">{meal.description}</p>
-                </div>
-                <div className="meal-item-actions" F>
-                  <button>Remove</button>
-                  <button>Add to Cart</button>
-                </div>
-              </article>
-            </li>
-          );
-        })}
+        {loadedMeals.map((meal) => (
+          <MealItem key={meal.id} {...meal} />
+        ))}
       </ul>
     );
   }
