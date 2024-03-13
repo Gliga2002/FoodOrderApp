@@ -1,3 +1,16 @@
+export async function sendHttpRequest(url, config) {
+  const response = await fetch(url, config);
+
+  if (!response.ok) {
+    throw new Error('Something went wrong, failed to send request.');
+  }
+
+  const resData = await response.json();
+  // console.log('OVDE', resData);
+
+  return resData;
+}
+
 export async function fetchMeals() {
   const response = await fetch('http://localhost:3000/meals');
 

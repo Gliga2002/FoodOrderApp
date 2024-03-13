@@ -14,7 +14,16 @@ body {
   min-height: 100vh;
 }
 
-.center-text {
+.center {
+  text-align: center;
+}
+
+.error {
+  background-color: red;
+  margin: 0 auto;
+  max-width: 45rem;
+  padding: 0.5rem;
+  border-radius: 5px;
   text-align: center;
 }
 
