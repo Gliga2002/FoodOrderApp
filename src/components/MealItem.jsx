@@ -5,6 +5,7 @@ import { useContext } from 'react';
 import CartContext from '../store/CartContext';
 
 export default function MealItem({ ...meal }) {
+  console.log('<MealIitem />')
   const { addItem } = useContext(CartContext);
 
   return (

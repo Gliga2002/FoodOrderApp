@@ -65,6 +65,7 @@ function cartReducer(state, action) {
 // Wrap around other component to make those context available to them, and do acuall state managment
 // that data that is provided could be statful (cant change), but i want that value to be dynamic, hence i will manage it as state
 export function CartContextProvider({ children }) {
+  console.log('<CartContexProvider/>');
   const [cart, dispatchCartAction] = useReducer(cartReducer, { items: [] });
 
   function addItem(item) {
@@ -76,7 +77,7 @@ export function CartContextProvider({ children }) {
 
   function removeItem(id) {
     dispatchCartAction({
-      type: 'ADD_ITEM',
+      type: 'REMOVE_ITEM',
       id: id,
     });
   }
@@ -88,9 +89,6 @@ export function CartContextProvider({ children }) {
     removeItem: removeItem,
   };
 
-  console.log(cartContext);
-
-  console.log('IZVRSAVAM');
   return (
     <CartContext.Provider value={cartContext}>{children}</CartContext.Provider>
   );

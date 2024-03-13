@@ -7,6 +7,7 @@ import UserProgressContext from '../store/UserProgressContext';
 
 // TODO: in React if you just pass textOnly, it will automatically be setted as true
 function Header() {
+  console.log('<Header/>')
   const { items } = useContext(CartContext);
   const { showCart } = useContext(UserProgressContext);
 

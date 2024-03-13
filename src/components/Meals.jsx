@@ -4,11 +4,13 @@ import { fetchMeals } from '../util/http';
 import MealItem from './MealItem';
 
 function Meals() {
+  console.log('<Meals />');
   const [isLoading, setIsLoading] = useState(false);
   const [loadedMeals, setLoadedMeals] = useState([]);
   const [error, setError] = useState(false);
 
   useEffect(() => {
+    console.log('Meals useEffect');
     async function fetchData() {
       setIsLoading(true);
       try {
