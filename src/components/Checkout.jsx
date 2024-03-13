@@ -14,13 +14,35 @@ export default function Checkout() {
     (acc, curr) => acc + curr.quantity * curr.price,
     0
   );
+
+  function handleSubmit(event) {
+    event.preventDefault();
+
+    const fd = new FormData(event.target);
+    const customerData = Object.fromEntries(fd.entries());
+
+    // ne treba ti useEffect jer je u okviru cb function, nece da napravi infinite loop
+    // mozes i da outsource ovo kad radi u separate file
+    fetch('http://localhost:3000/orders', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        order: {
+          items: items,
+          customer: customerData,
+        },
+      }),
+    });
+  }
   return (
     <Modal open={progress === 'checkout'} onClose={hideCheckout}>
-      <form>
+      <form onSubmit={handleSubmit}>
         <h2>Checkout</h2>
         <p>Total Amount: {currencyFormatter.format(cartTotal)}</p>
 
-        <Input label="Full Name" type="text" id="full-name" />
+        <Input label="Full Name" type="text" id="name" />
         <Input label="E-mail Adress" type="email" id="email" />
         <Input label="Street" type="text" id="street" />
         <div className="control-row">

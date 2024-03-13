@@ -1,1 +1,22 @@
-[]
+[
+  {
+    "items": [
+      {
+        "id": "m2",
+        "name": "Margherita Pizza",
+        "price": "12.99",
+        "description": "A classic pizza with fresh mozzarella, tomatoes, and basil on a thin and crispy crust.",
+        "image": "images/margherita-pizza.jpg",
+        "quantity": 2
+      }
+    ],
+    "customer": {
+      "name": "Darko Gligorijevic",
+      "email": "darkogligorijevic4@gmail.com",
+      "street": "Aleksandra Medvedeva 14",
+      "postal-code": "37000",
+      "city": "Nis"
+    },
+    "id": "639.7380564133066"
+  }
+]

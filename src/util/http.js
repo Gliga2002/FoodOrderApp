@@ -9,3 +9,7 @@ export async function fetchMeals() {
 
   return resData;
 }
+
+export function postOrder() {
+  
+}
