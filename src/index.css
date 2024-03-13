@@ -22,9 +22,10 @@ body {
   background-color: red;
   margin: 0 auto;
   max-width: 45rem;
-  padding: 0.5rem;
+  padding: 0.2rem;
   border-radius: 5px;
   text-align: center;
+  margin: 0.5rem;
 }
 
 #main-header {

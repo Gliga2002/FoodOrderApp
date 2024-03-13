@@ -5,16 +5,35 @@ import { currencyFormatter } from '../util/formatting';
 import Input from './UI/Input';
 import Button from './UI/Button';
 import UserProgressContext from '../store/UserProgressContext';
-import { postOrder } from '../util/http';
+import useHttp from '../hooks/useHttp';
+import Error from './Error';
+
+const requestConfig = {
+  method: 'POST',
+  headers: {
+    'Content-type': 'application/json',
+  },
+};
 
 export default function Checkout() {
   console.log('Checkout');
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [error, setError] = useState(false);
 
-  const { items } = useContext(CartContext);
+  const { items, clearCart } = useContext(CartContext);
   const { progress, hideCheckout } = useContext(UserProgressContext);
+
+  const {
+    data,
+    isLoading: isSending,
+    error,
+    sendRequest,
+    initData,
+  } = useHttp('http://localhost:3000/orders', requestConfig);
+
+  function handleFinish() {
+    hideCheckout();
+    clearCart();
+    initData();
+  }
 
   const cartTotal = items.reduce(
     (acc, curr) => acc + curr.quantity * curr.price,
@@ -27,92 +46,58 @@ export default function Checkout() {
     const fd = new FormData(event.target);
     const customerData = Object.fromEntries(fd.entries());
 
-    // ne treba ti useEffect jer je u okviru cb function, nece da napravi infinite loop
-    // mozes i da outsource ovo kad radi u separate file
-    async function fetchData() {
-      setIsLoading(true);
-      try {
-        const response = await postOrder(customerData, items);
-        setIsSuccess(response);
-      } catch (error) {
-        setError(error);
-      }
-      setIsLoading(false);
-    }
-
-    fetchData();
+    sendRequest({
+      order: {
+        items: items,
+        customer: customerData,
+      },
+    });
   }
 
-  let content = (
-    <form onSubmit={handleSubmit}>
-      <h2>Checkout</h2>
-      <p>Total Amount: {currencyFormatter.format(cartTotal)}</p>
-
-      <Input label="Full Name" type="text" id="name" />
-      <Input label="E-mail Adress" type="email" id="email" />
-      <Input label="Street" type="text" id="street" />
-      <div className="control-row">
-        <Input label="Postal Code" type="text" id="postal-code" />
-        <Input label="City" type="text" id="city" />
-      </div>
-      <p className="modal-actions">
-        <Button type="button" textOnly onClick={hideCheckout}>
-          Close
-        </Button>
-        <Button>Submit Order</Button>
-      </p>
-    </form>
+  let actions = (
+    <>
+      <Button type="button" textOnly onClick={hideCheckout}>
+        Close
+      </Button>
+      <Button>Submit Order</Button>
+    </>
   );
 
-  if (isLoading) {
-    content = <p className="center-text">Loading data...</p>;
+  if (isSending) {
+    actions = <span>Sending order data...</span>;
   }
 
-  if (error && !isLoading) {
-    content = <p className="center-text">Failed to post data...</p>;
-    <Button
-      type="button"
-      textOnly
-      onClick={() => {
-        hideCheckout();
-        setError(false);
-      }}
-    >
-      Close
-    </Button>;
-  }
-
-  if (isSuccess && !isLoading) {
-    content = (
-      <>
-        <p className="center-text">Cestitamo, uspesno ste submit data</p>;
-        <Button
-          type="button"
-          textOnly
-          onClick={() => {
-            hideCheckout();
-            setIsSuccess(false);
-          }}
-        >
-          Close
-        </Button>
-        ;
-      </>
+  if (data && !error) {
+    return (
+      <Modal open={progress === 'checkout'} onClose={handleFinish}>
+        <h2>Success!</h2>
+        <p>Your order was submitted successfully.</p>
+        <p>
+          We will get back to you with more details via email within next few
+          minutes.
+        </p>
+        <p className="modal-actions">
+          <Button onClick={handleFinish}>Okay</Button>
+        </p>
+      </Modal>
     );
   }
-
-  console.log(content);
-
   return (
-    <Modal
-      open={progress === 'checkout'}
-      onClose={() => {
-        hideCheckout();
-        setIsSuccess(false);
-        setError(false);
-      }}
-    >
-      {content}
+    <Modal open={progress === 'checkout'} onClose={hideCheckout} F>
+      <form onSubmit={handleSubmit}>
+        <h2>Checkout</h2>
+        <p>Total Amount: {currencyFormatter.format(cartTotal)}</p>
+
+        <Input label="Full Name" type="text" id="name" />
+        <Input label="E-mail Adress" type="email" id="email" />
+        <Input label="Street" type="text" id="street" />
+        <div className="control-row">
+          <Input label="Postal Code" type="text" id="postal-code" />
+          <Input label="City" type="text" id="city" />
+        </div>
+        {error && <Error title="Failed to submit order" message={error} />}
+        <p className="modal-actions">{actions}</p>
+      </form>
     </Modal>
   );
 }
