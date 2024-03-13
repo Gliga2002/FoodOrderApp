@@ -9,14 +9,20 @@ import CartItem from './CartItem';
 export default function Cart() {
   console.log('<Cart/>');
   const { items, addItem, removeItem } = useContext(CartContext);
-  const { progress, hideCart } = useContext(UserProgressContext);
+  const { progress, hideCart, showCheckout } = useContext(UserProgressContext);
 
   const cartTotal = items.reduce(
     (acc, curr) => acc + curr.quantity * curr.price,
     0
   );
+  // TODO: Sa ovaj Modal je nastao bag, jjer onClose se trigger kad se zatvara ovaj modal
+  // A zatvorice se ako sam na cart i odem checkout, ovaj se zatvara i hideCart is triggered and therefore my progress is '' and no 'checkout'
   return (
-    <Modal className="cart" open={progress === 'cart'}>
+    <Modal
+      className="cart"
+      open={progress === 'cart'}
+      onClose={progress === 'cart' ? hideCart : null}
+    >
       <h2>Your Cart</h2>
       <ul>
         {items.map((item) => {
@@ -38,7 +44,9 @@ export default function Cart() {
         <Button textOnly onClick={hideCart}>
           Close
         </Button>
-        <Button onClick={hideCart}>Go to Checkout</Button>
+        {items.length > 0 && (
+          <Button onClick={showCheckout}>Go to Checkout</Button>
+        )}
       </p>
     </Modal>
   );

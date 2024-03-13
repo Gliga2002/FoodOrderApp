@@ -2,8 +2,8 @@ import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 
 // ovde koristim drugu osobinu useEffecta, umesto forwardedRef(useRef), koristim useEffect to syncronize parent prop and useRef hook inside that component
-export default function Modal({ children, open, className = '' }) {
-  console.log('<Modal/>')
+export default function Modal({ children, open, onClose, className = '' }) {
+  console.log('<Modal/>');
   const dialog = useRef();
   useEffect(() => {
     // patter, jer ce ova cb funkcija u return da zapamti tu vrednost (closure), izvrsice se kasnije od useEffect, kad se sledeca useEffect bude izvrsavala
@@ -24,7 +24,7 @@ export default function Modal({ children, open, className = '' }) {
     };
   }, [open]);
   return createPortal(
-    <dialog ref={dialog} className={`modal ${className}`}>
+    <dialog ref={dialog} className={`modal ${className}`} onClose={onClose}>
       {children}
     </dialog>,
     document.getElementById('modal')
