@@ -31,7 +31,7 @@ function Meals() {
   let content = <p className="center-text">Loading data...</p>;
 
   if (error) {
-    content = <p className="center-text">Loading data...</p>;
+    content = <p className="center-text">Failed to fetch data</p>;
   }
 
   if (!isLoading && !error) {
